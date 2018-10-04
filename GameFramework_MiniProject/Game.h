@@ -4,6 +4,7 @@
 	게임 클래스 구성
 */
 #include <SDL.h>
+#include <SDL_image.h>
 #include <iostream>
 
 class Game {
