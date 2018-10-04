@@ -3,6 +3,7 @@
 	Game.cpp
 */
 #include "Game.h"
+#include "TextureManager.h"
 
 SDL_Texture* playerTex;
 SDL_Rect srcR, destR;
@@ -42,9 +43,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 		isRunning = false;
 	}
 
-	SDL_Surface* tmpSurface = IMG_Load("assets/Player.png");
-	playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
-	SDL_FreeSurface(tmpSurface);
+	//플레이어 텍스쳐를 텍스쳐매니저로 로드해줌
+	playerTex = TextureManager::LoadTexture("assets/Player.png", renderer);
 }
 
 void Game::handleEvents()
