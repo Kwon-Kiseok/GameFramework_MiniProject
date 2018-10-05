@@ -21,11 +21,12 @@ public:
 	void render();
 	void clean();
 
+	static SDL_Renderer *renderer;
+
 	bool running() { return isRunning; }
 
 private:
 	int cnt = 0;
-	bool isRunning;
+	bool isRunning = false;
 	SDL_Window *window;
-	SDL_Renderer *renderer;
 };
