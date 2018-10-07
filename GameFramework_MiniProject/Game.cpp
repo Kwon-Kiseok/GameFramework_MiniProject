@@ -4,20 +4,15 @@
 */
 #include "Game.h"
 #include "TextureManager.h"
-#include "GameObject.h"
 #include "Map.h"
-
-#include "ECS.h"
 #include "Components.h"
 
-GameObject *player;
-GameObject *enemy;
 Map *map;
 
 SDL_Renderer* Game::renderer = nullptr;
 
 Manager manager;
-auto& newPlayer(manager.addEntity());
+auto& player(manager.addEntity());
 
 Game::Game()
 {}
@@ -56,12 +51,14 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
 	//플레이어 텍스쳐를 텍스쳐매니저로 로드해줌
 	//playerTex = TextureManager::LoadTexture("assets/Player.png", renderer);
-	player = new GameObject("assets/Player.png",0,0);
-	enemy = new GameObject("assets/Enemy.png",50, 50);
+	//player = new GameObject("assets/Player.png",0,0);
+	//enemy = new GameObject("assets/Enemy.png",50, 50);
 	map = new Map();
 
-	newPlayer.addComponent<PositionComponent>();
-	newPlayer.getComponent<PositionComponent>().setPos(500, 500);
+	//ECS implementation
+
+	player.addComponent<PositionComponent>(100,500);
+	player.addComponent<SpriteComponent>("assets/Player.png");
 }
 
 void Game::handleEvents()
@@ -80,19 +77,23 @@ void Game::handleEvents()
 
 void Game::update()
 {
-	player->Update();
-	enemy->Update();
+	manager.refresh();
 	manager.update();
-	std::cout << newPlayer.getComponent<PositionComponent>().x() << "," <<
-		newPlayer.getComponent<PositionComponent>().y() << std::endl;
+	
+
+	//for example. convert sprite.
+	if (player.getComponent<PositionComponent>().x() > 100)
+	{
+		player.getComponent<SpriteComponent>().setTex("assets/Enemy.png");
+	}
 }
 
 void Game::render()
 {
 	SDL_RenderClear(renderer);
 	map->DrawMap();
-	player->Render();
-	enemy->Render();
+
+	manager.draw();
 	SDL_RenderPresent(renderer);
 }
 

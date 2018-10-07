@@ -65,6 +65,11 @@ public:
 private:
 };
 
+
+//unique_ptr
+//C++에서 제공하는 스마트 포인터 <memory>헤더 인클루드 시 사용가능
+//동적으로 힙 영역에 할당된 인스턴스에 대한 소유권을 얻어 객체가 사라질 경우 해당 인스턴스를 해제
+//[참고링크] http://bunhere.tistory.com/407
 class Entity
 {
 private:
@@ -76,10 +81,13 @@ private:
 public:
 	void update()
 	{
-		for (auto& c : components) c->update();
+		for (auto& c : components) c->update();		
+	}
+	void draw() 
+	{
 		for (auto& c : components) c->draw();
 	}
-	void draw() {}
+
 	bool isActive() const { return active; }
 	void destroy() { active = false; }
 

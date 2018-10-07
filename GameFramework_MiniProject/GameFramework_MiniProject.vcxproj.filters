@@ -50,5 +50,11 @@
     <ClInclude Include="Components.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
