@@ -7,6 +7,7 @@
 #include "Map.h"
 #include "Components.h"
 #include "Vector2D.h"
+#include "Collision.h"
 
 Map *map;
 
@@ -14,7 +15,10 @@ SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 Manager manager;
+
+//Entitiy를 생성해 줌 Unity에서 빈 오브젝트 생성하는 거와 동일
 auto& player(manager.addEntity());
+auto& wall(manager.addEntity());
 
 Game::Game()
 {}
@@ -56,9 +60,16 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 	//ECS implementation
 
 	//player 에게 할당해주는 컴포넌트들
-	player.addComponent<TransformComponent>();
+	player.addComponent<TransformComponent>(2);
 	player.addComponent<SpriteComponent>("assets/Player.png");
 	player.addComponent<KeyboardController>();
+	player.addComponent<ColliderComponent>("player");
+
+	//wall 에게 할당해주는 컴포넌트들
+	wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
+	wall.addComponent<SpriteComponent>("assets/dirt.png");
+	wall.addComponent<ColliderComponent>("wall");
+
 }
 
 void Game::handleEvents()
@@ -81,6 +92,14 @@ void Game::update()
 	manager.refresh();
 	manager.update();
 	
+
+	//AABB 충돌 검사에 player 와 wall 이 부딪힘을 검사
+	if (Collision::AABB(player.getComponent<ColliderComponent>().collider,
+		wall.getComponent<ColliderComponent>().collider))
+	{
+		player.getComponent<TransformComponent>().scale = 1;
+		std::cout << "WALL HIT!" << std::endl;
+	}
 }
 
 void Game::render()
