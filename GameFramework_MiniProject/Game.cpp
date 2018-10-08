@@ -98,6 +98,9 @@ void Game::update()
 		wall.getComponent<ColliderComponent>().collider))
 	{
 		player.getComponent<TransformComponent>().scale = 1;
+		
+		//wall과 충돌했을 경우 player를 입력방향의 반대방향으로 힘을 가해 이동을 멈춤
+		player.getComponent<TransformComponent>().velocity * -1;
 		std::cout << "WALL HIT!" << std::endl;
 	}
 }
