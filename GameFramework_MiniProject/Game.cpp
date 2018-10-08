@@ -6,6 +6,7 @@
 #include "TextureManager.h"
 #include "Map.h"
 #include "Components.h"
+#include "Vector2D.h"
 
 Map *map;
 
@@ -49,15 +50,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 		isRunning = false;
 	}
 
-	//플레이어 텍스쳐를 텍스쳐매니저로 로드해줌
-	//playerTex = TextureManager::LoadTexture("assets/Player.png", renderer);
-	//player = new GameObject("assets/Player.png",0,0);
-	//enemy = new GameObject("assets/Enemy.png",50, 50);
 	map = new Map();
 
 	//ECS implementation
 
-	player.addComponent<PositionComponent>(100,500);
+	player.addComponent<TransformComponent>();
 	player.addComponent<SpriteComponent>("assets/Player.png");
 }
 
@@ -79,10 +76,10 @@ void Game::update()
 {
 	manager.refresh();
 	manager.update();
+	player.getComponent<TransformComponent>().position.Add(Vector2D(5, 0));
 	
-
 	//for example. convert sprite.
-	if (player.getComponent<PositionComponent>().x() > 100)
+	if (player.getComponent<TransformComponent>().position.x > 100)
 	{
 		player.getComponent<SpriteComponent>().setTex("assets/Enemy.png");
 	}
