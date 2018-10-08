@@ -14,11 +14,17 @@ Map *map;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
+std::vector<ColliderComponent*> Game::colliders;
+
 Manager manager;
 
 //Entitiy를 생성해 줌 Unity에서 빈 오브젝트 생성하는 거와 동일
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
+
+auto& tile0(manager.addEntity());
+auto& tile1(manager.addEntity());
+auto& tile2(manager.addEntity());
 
 Game::Game()
 {}
@@ -70,6 +76,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 	wall.addComponent<SpriteComponent>("assets/dirt.png");
 	wall.addComponent<ColliderComponent>("wall");
 
+	//tile
+	tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);	// 0 = water
+	tile1.addComponent<TileComponent>(250, 250, 32, 32, 1); // 1 = dirt
+	tile1.addComponent<ColliderComponent>("dirt");
+	tile2.addComponent<TileComponent>(150, 150, 32, 32, 2); // 2 = grass
+	tile2.addComponent<ColliderComponent>("grass");
 }
 
 void Game::handleEvents()
@@ -92,23 +104,16 @@ void Game::update()
 	manager.refresh();
 	manager.update();
 	
-
-	//AABB 충돌 검사에 player 와 wall 이 부딪힘을 검사
-	if (Collision::AABB(player.getComponent<ColliderComponent>().collider,
-		wall.getComponent<ColliderComponent>().collider))
-	{
-		player.getComponent<TransformComponent>().scale = 1;
-		
-		//wall과 충돌했을 경우 player를 입력방향의 반대방향으로 힘을 가해 이동을 멈춤
-		player.getComponent<TransformComponent>().velocity * -1;
-		std::cout << "WALL HIT!" << std::endl;
+	for (auto cc : colliders)
+	{		
+		Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
 	}
 }
 
 void Game::render()
 {
 	SDL_RenderClear(renderer);
-	map->DrawMap();
+	//map->DrawMap();
 
 	manager.draw();
 	SDL_RenderPresent(renderer);
