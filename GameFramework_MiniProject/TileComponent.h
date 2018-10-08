@@ -1,3 +1,11 @@
+/*
+	2018.10.09 Kwon ki seok
+	TileComponent.h
+
+	원하는 크기의 타일 맵을 생성할 수 있도록 구성
+	tileID와 path를 통해 생성 구문 간결화
+*/
+
 #pragma once
 
 #include "ECS.h"
@@ -28,13 +36,13 @@ public:
 		switch (tileID)
 		{
 		case 0:
-			path = "assets/water.png";
-			break;
-		case 1:
 			path = "assets/dirt.png";
 			break;
-		case 2:
+		case 1:
 			path = "assets/grass.png";
+			break;
+		case 2:
+			path = "assets/water.png";
 			break;
 		default:
 			break;

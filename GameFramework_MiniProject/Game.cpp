@@ -22,9 +22,13 @@ Manager manager;
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
 
-auto& tile0(manager.addEntity());
-auto& tile1(manager.addEntity());
-auto& tile2(manager.addEntity());
+enum groupLabels : std::size_t
+{
+	groupMap,
+	groupPlayers,
+	groupEnemies,
+	groupColliders
+};
 
 Game::Game()
 {}
@@ -65,23 +69,22 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
 	//ECS implementation
 
+	Map::LoadMap("assets/pixel_16x16.txt", 16, 16);
+
 	//player 에게 할당해주는 컴포넌트들
 	player.addComponent<TransformComponent>(2);
 	player.addComponent<SpriteComponent>("assets/Player.png");
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
+	player.addGroup(groupPlayers);
 
 	//wall 에게 할당해주는 컴포넌트들
 	wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
 	wall.addComponent<SpriteComponent>("assets/dirt.png");
 	wall.addComponent<ColliderComponent>("wall");
+	wall.addGroup(groupMap);
 
-	//tile
-	tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);	// 0 = water
-	tile1.addComponent<TileComponent>(250, 250, 32, 32, 1); // 1 = dirt
-	tile1.addComponent<ColliderComponent>("dirt");
-	tile2.addComponent<TileComponent>(150, 150, 32, 32, 2); // 2 = grass
-	tile2.addComponent<ColliderComponent>("grass");
+	
 }
 
 void Game::handleEvents()
@@ -110,12 +113,27 @@ void Game::update()
 	}
 }
 
+auto& tiles(manager.getGroup(groupMap));
+auto& players(manager.getGroup(groupPlayers));
+auto& enemies(manager.getGroup(groupEnemies));
+
 void Game::render()
 {
 	SDL_RenderClear(renderer);
-	//map->DrawMap();
+	for (auto& t : tiles)
+	{
+		t->draw();
+	}
 
-	manager.draw();
+	for (auto& t : players)
+	{
+		t->draw();
+	}
+
+	for (auto & t : enemies)
+	{
+		t->draw();
+	}
 	SDL_RenderPresent(renderer);
 }
 
@@ -127,3 +145,9 @@ void Game::clean()
 	std::cout << "Game Cleaned" << std::endl;
 }
 
+void Game::AddTile(int id, int x, int y)
+{
+	auto& tile(manager.addEntity());
+	tile.addComponent<TileComponent>(x, y, 32, 32, id);
+	tile.addGroup(groupMap);
+}
