@@ -73,7 +73,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
 	//player 에게 할당해주는 컴포넌트들
 	player.addComponent<TransformComponent>(2);
-	player.addComponent<SpriteComponent>("assets/Player.png");
+	player.addComponent<SpriteComponent>("assets/Player_anim.png",true);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
