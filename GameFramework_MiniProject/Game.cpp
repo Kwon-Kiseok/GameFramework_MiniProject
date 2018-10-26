@@ -14,6 +14,8 @@ Map *map;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
+SDL_Rect Game::camera = { 0,0,800,640 };
+
 std::vector<ColliderComponent*> Game::colliders;
 
 bool Game::isRunning = false;
@@ -109,18 +111,19 @@ void Game::update()
 	manager.refresh();
 	manager.update();
 	
-	//플레이어의 벡터 방향값과 이동속도값을 변수로 저장  
-	Vector2D pVel = player.getComponent<TransformComponent>().velocity;
-	int pSpeed = player.getComponent<TransformComponent>().speed;
+	camera.x = player.getComponent<TransformComponent>().position.x - 400;
+	camera.y = player.getComponent<TransformComponent>().position.y - 320;
+	
 
-
-	//그려지는 타일 좌표값들을 플레이어가 이동하는 것에 반대만큼 똑같이 주어 
-	//반복적으로 그려지면서 맵 스크롤링을 구현
-	for (auto t : tiles)
-	{
-		t->getComponent<TileComponent>().destRect.x += -(pVel.x * pSpeed);
-		t->getComponent<TileComponent>().destRect.y += -(pVel.y * pSpeed);
-	}
+	//카메라 경계면 바운딩 처리
+	if (camera.x < 0)
+		camera.x = 0;
+	if (camera.y < 0)
+		camera.y = 0;
+	if (camera.x > camera.w)
+		camera.x = camera.w;
+	if (camera.y > camera.h)
+		camera.y = camera.h;
 }
 
 
