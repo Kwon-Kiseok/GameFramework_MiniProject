@@ -24,8 +24,8 @@ public:
 
 	TransformComponent(int sc)
 	{
-		position.x = 400;
-		position.y = 320;
+		position.x = 600;
+		position.y = 500;
 		scale = sc;
 	}
 

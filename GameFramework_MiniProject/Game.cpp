@@ -16,29 +16,13 @@ SDL_Event Game::event;
 
 SDL_Rect Game::camera = { 0,0,800,640 };
 
-std::vector<ColliderComponent*> Game::colliders;
-
 bool Game::isRunning = false;
 
 Manager manager;
 
 //Entitiy를 생성해 줌 Unity에서 빈 오브젝트 생성하는 거와 동일
 auto& player(manager.addEntity());
-auto& wall(manager.addEntity());
 
-const char* mapfile = "assets/terrain_ss.png"; // 맵파일 로드
-
-enum groupLabels : std::size_t
-{
-	groupMap,
-	groupPlayers,
-	groupEnemies,
-	groupColliders
-};
-
-auto& tiles(manager.getGroup(groupMap));
-auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
 
 Game::Game()
 {}
@@ -75,11 +59,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 		isRunning = false;
 	}
 
-	map = new Map();
+	map = new Map("assets/terrain_ss.png", 3, 32);
 
 	//ECS implementation
 
-	Map::LoadMap("assets/map.map", 25, 20);
+	map->LoadMap("assets/map.map", 25, 20);
 
 	//player 에게 할당해주는 컴포넌트들
 	player.addComponent<TransformComponent>(4);
@@ -90,6 +74,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
 	
 }
+
+auto& tiles(manager.getGroup(Game::groupMap));
+auto& players(manager.getGroup(Game::groupPlayers));
+auto& colliders(manager.getGroup(Game::groupColliders));
 
 void Game::handleEvents()
 {
@@ -108,9 +96,22 @@ void Game::handleEvents()
 
 void Game::update()
 {
+
+	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+	Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
 	manager.refresh();
 	manager.update();
 	
+	for (auto&c : colliders)
+	{
+		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+		if (Collision::AABB(cCol, playerCol))
+		{
+			player.getComponent<TransformComponent>().position = playerPos;
+		}
+	}
+
 	camera.x = player.getComponent<TransformComponent>().position.x - 400;
 	camera.y = player.getComponent<TransformComponent>().position.y - 320;
 	
@@ -135,15 +136,16 @@ void Game::render()
 		t->draw();
 	}
 
+	/*for (auto& c : colliders)
+	{
+		c->draw();
+	}*/
+
 	for (auto& t : players)
 	{
 		t->draw();
 	}
 
-	for (auto & t : enemies)
-	{
-		t->draw();
-	}
 	SDL_RenderPresent(renderer);
 }
 
@@ -153,11 +155,4 @@ void Game::clean()
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 	std::cout << "Game Cleaned" << std::endl;
-}
-
-void Game::AddTile(int srcX,int srcY, int xpos, int ypos)
-{
-	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, mapfile);
-	tile.addGroup(groupMap);
 }
