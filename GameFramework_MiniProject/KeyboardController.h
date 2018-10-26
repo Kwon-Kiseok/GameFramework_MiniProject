@@ -83,7 +83,9 @@ public:
 				transform->velocity.x = 0;
 				sprite->Play("Idle");
 				break;
-
+			//ESC를 통해 게임 종료 구현
+			case SDLK_ESCAPE:
+				Game::isRunning = false;
 			default:
 				break;
 			}

@@ -16,6 +16,8 @@ SDL_Event Game::event;
 
 std::vector<ColliderComponent*> Game::colliders;
 
+bool Game::isRunning = false;
+
 Manager manager;
 
 //Entitiy를 생성해 줌 Unity에서 빈 오브젝트 생성하는 거와 동일
@@ -31,6 +33,10 @@ enum groupLabels : std::size_t
 	groupEnemies,
 	groupColliders
 };
+
+auto& tiles(manager.getGroup(groupMap));
+auto& players(manager.getGroup(groupPlayers));
+auto& enemies(manager.getGroup(groupEnemies));
 
 Game::Game()
 {}
@@ -103,15 +109,20 @@ void Game::update()
 	manager.refresh();
 	manager.update();
 	
-	for (auto cc : colliders)
-	{		
-		Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
+	//플레이어의 벡터 방향값과 이동속도값을 변수로 저장  
+	Vector2D pVel = player.getComponent<TransformComponent>().velocity;
+	int pSpeed = player.getComponent<TransformComponent>().speed;
+
+
+	//그려지는 타일 좌표값들을 플레이어가 이동하는 것에 반대만큼 똑같이 주어 
+	//반복적으로 그려지면서 맵 스크롤링을 구현
+	for (auto t : tiles)
+	{
+		t->getComponent<TileComponent>().destRect.x += -(pVel.x * pSpeed);
+		t->getComponent<TileComponent>().destRect.y += -(pVel.y * pSpeed);
 	}
 }
 
-auto& tiles(manager.getGroup(groupMap));
-auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
 
 void Game::render()
 {
