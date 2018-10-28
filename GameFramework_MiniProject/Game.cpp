@@ -8,17 +8,19 @@
 #include "Components.h"
 #include "Vector2D.h"
 #include "Collision.h"
+#include "AssetManager.h"
 
 Map *map;
+Manager manager;
 
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
 SDL_Rect Game::camera = { 0,0,800,640 };
 
-bool Game::isRunning = false;
+AssetManager* Game::assets = new AssetManager(&manager);
 
-Manager manager;
+bool Game::isRunning = false;
 
 //Entitiy를 생성해 줌 Unity에서 빈 오브젝트 생성하는 거와 동일
 auto& player(manager.addEntity());
@@ -59,25 +61,37 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 		isRunning = false;
 	}
 
-	map = new Map("assets/terrain_ss.png", 3, 32);
+	//애셋 메니저를 통한 텍스쳐 ID 등록
+	assets->AddTexture("terrain", "assets/terrain_ss.png");
+	assets->AddTexture("player", "assets/Player_anim.png");
+	assets->AddTexture("projectile", "assets/proj.png");
+
+	map = new Map("terrain", 3, 32);
 
 	//ECS implementation
 
 	map->LoadMap("assets/map.map", 25, 20);
 
 	//player 에게 할당해주는 컴포넌트들
-	player.addComponent<TransformComponent>(4);
-	player.addComponent<SpriteComponent>("assets/Player_anim.png",true);
+	player.addComponent<TransformComponent>(800.0f,600.0f,32,32,2);
+	player.addComponent<SpriteComponent>("player",true);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
 
-	
+	//총알 생성
+	assets->CreateProjectile(Vector2D(600, 600),Vector2D(2,0) ,200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(600, 620), Vector2D(2, 0), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(400, 600), Vector2D(2, 1), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(600, 600), Vector2D(2, -1), 200, 2, "projectile");
+
 }
 
+//생성 객체들 그룹화 
 auto& tiles(manager.getGroup(Game::groupMap));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
+auto& projectiles(manager.getGroup(Game::groupProjectiles));
 
 void Game::handleEvents()
 {
@@ -103,6 +117,8 @@ void Game::update()
 	manager.refresh();
 	manager.update();
 	
+
+	//충돌처리 구문
 	for (auto&c : colliders)
 	{
 		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
@@ -112,6 +128,18 @@ void Game::update()
 		}
 	}
 
+	for (auto&p : projectiles)
+	{
+		if (Collision::AABB(player.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+		{
+			std::cout << "플레이어 충돌" << std::endl;
+			//플레이어와 총알의 충돌 시 총알 파괴
+			p->destroy();
+		}
+	}
+
+
+	//카메라 위치 플레이어 따라다니며 고정
 	camera.x = player.getComponent<TransformComponent>().position.x - 400;
 	camera.y = player.getComponent<TransformComponent>().position.y - 320;
 	
@@ -141,9 +169,14 @@ void Game::render()
 		c->draw();
 	}*/
 
-	for (auto& t : players)
+	for (auto& p : players)
 	{
-		t->draw();
+		p->draw();
+	}
+
+	for (auto& p : projectiles)
+	{
+		p->draw();
 	}
 
 	SDL_RenderPresent(renderer);

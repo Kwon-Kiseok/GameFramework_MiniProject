@@ -10,6 +10,7 @@
 
 #include "ECS.h"
 #include <SDL.h>
+#include "AssetManager.h"
 
 class TileComponent : public Component
 {
@@ -23,9 +24,9 @@ public:
 
 	~TileComponent() { SDL_DestroyTexture(texture); }
 
-	TileComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, const char* path)
+	TileComponent(int srcX, int srcY, int xpos, int ypos, int tsize, int tscale, std::string id)
 	{
-		texture = TextureManager::LoadTexture(path);
+		texture = Game::assets->GetTexture(id);
 		
 		position.x = xpos;
 		position.y = ypos;

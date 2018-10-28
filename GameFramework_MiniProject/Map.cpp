@@ -6,8 +6,8 @@
 //extern 으로 ECS 안에 있던 Manager 전역 클래스 사용
 extern Manager manager;
 
-Map::Map(const char* mfilePath, int mScale, int tSize) 
-	: mapFilePath(mfilePath) , mapScale(mScale) , tileSize(tSize)
+Map::Map(std::string tID, int mScale, int tSize) 
+	: texID(tID) , mapScale(mScale) , tileSize(tSize)
 {
 	scaledSize = mScale * tSize;
 }
@@ -65,6 +65,6 @@ void Map::LoadMap(std::string path, int sizeX, int sizeY)
 void Map::AddTile(int srcX, int srcY, int xpos, int ypos)
 {
 	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, tileSize, mapScale, mapFilePath);
+	tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, tileSize, mapScale, texID);
 	tile.addGroup(Game::groupMap);
 }
