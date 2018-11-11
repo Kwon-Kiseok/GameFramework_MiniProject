@@ -9,6 +9,7 @@
 #include "Vector2D.h"
 #include "Collision.h"
 #include "AssetManager.h"
+#include <sstream>
 
 Map *map;
 Manager manager;
@@ -24,7 +25,7 @@ bool Game::isRunning = false;
 
 //Entitiy를 생성해 줌 Unity에서 빈 오브젝트 생성하는 거와 동일
 auto& player(manager.addEntity());
-
+auto& label(manager.addEntity());
 
 Game::Game()
 {}
@@ -61,10 +62,18 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 		isRunning = false;
 	}
 
+	if (TTF_Init() == -1)
+	{
+		std::cout << "Error : SDL_TTF" << std::endl;
+	}
+
 	//애셋 메니저를 통한 텍스쳐 ID 등록
 	assets->AddTexture("terrain", "assets/terrain_ss.png");
 	assets->AddTexture("player", "assets/Player_anim.png");
 	assets->AddTexture("projectile", "assets/proj.png");
+
+	//애셋 매니저를 통한 폰트 등록
+	assets->AddFont("arial", "assets/arial.ttf", 16);
 
 	map = new Map("terrain", 3, 32);
 
@@ -78,6 +87,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
+
+	SDL_Color white = { 255,255,255,255 };
+	label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
 	//총알 생성
 	assets->CreateProjectile(Vector2D(600, 600),Vector2D(2,0) ,200, 2, "projectile");
@@ -113,6 +125,14 @@ void Game::update()
 
 	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
 	Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
+	//sstream 을 통해 stringstream을 만들어서 
+	//ss에 Player Position 문구에 playerPos 값을 string으로 변환해서 붙인다
+	//그 후 SetLabel에 ss를 통째로 넣어준다.
+	//업데이트로 플레이어의 포지션값을 실시간으로 보여준다.
+	std::stringstream ss;
+	ss << "Player Position: " << playerPos;
+	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
 
 	manager.refresh();
 	manager.update();
@@ -178,6 +198,8 @@ void Game::render()
 	{
 		p->draw();
 	}
+
+	label.draw();
 
 	SDL_RenderPresent(renderer);
 }

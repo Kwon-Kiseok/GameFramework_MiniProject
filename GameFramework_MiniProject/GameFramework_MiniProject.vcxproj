@@ -70,8 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -81,8 +85,9 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -91,7 +96,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\lib\x64;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\lib\x64;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -148,6 +161,7 @@
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="UILabel.h" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
