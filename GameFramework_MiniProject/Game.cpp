@@ -32,7 +32,7 @@ Game::Game()
 Game::~Game()
 {}
 
-void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
+void Game::init(const char *title, int width, int height, bool fullscreen)
 {
 	int flags = 0;
 	if (fullscreen)
@@ -44,7 +44,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 	{
 		std::cout << "Subsystem Initialised!..." << std::endl;
 
-		window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 		if (window)
 		{
 			std::cout << "Window created!" << std::endl;
@@ -58,8 +58,6 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 		}
 
 		isRunning = true;
-	} else {
-		isRunning = false;
 	}
 
 	if (TTF_Init() == -1)
@@ -92,10 +90,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 	label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
 	//총알 생성
-	assets->CreateProjectile(Vector2D(600, 600),Vector2D(2,0) ,200, 2, "projectile");
-	assets->CreateProjectile(Vector2D(600, 620), Vector2D(2, 0), 200, 2, "projectile");
-	assets->CreateProjectile(Vector2D(400, 600), Vector2D(2, 1), 200, 2, "projectile");
-	assets->CreateProjectile(Vector2D(600, 600), Vector2D(2, -1), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(500.0f, 600.0f),Vector2D(2.0f,0.0f) ,200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(600.0f, 620.0f), Vector2D(2.0f, 0.0f), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(400.0f, 600.0f), Vector2D(2.0f, 1.0f), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(600.0f, 600.0f), Vector2D(2.0f, -1.0f), 200, 2, "projectile");
 
 }
 
@@ -160,8 +158,8 @@ void Game::update()
 
 
 	//카메라 위치 플레이어 따라다니며 고정
-	camera.x = player.getComponent<TransformComponent>().position.x - 400;
-	camera.y = player.getComponent<TransformComponent>().position.y - 320;
+	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - 400);
+	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - 320);
 	
 
 	//카메라 경계면 바운딩 처리
@@ -184,19 +182,19 @@ void Game::render()
 		t->draw();
 	}
 
-	/*for (auto& c : colliders)
+	for (auto& c : colliders)
 	{
 		c->draw();
-	}*/
+	}
 
 	for (auto& p : players)
 	{
 		p->draw();
 	}
 
-	for (auto& p : projectiles)
+	for (auto& pj : projectiles)
 	{
-		p->draw();
+		pj->draw();
 	}
 
 	label.draw();

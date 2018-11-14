@@ -18,7 +18,7 @@
 class AssetManager
 {
 public:
-	AssetManager(Manager* manager);
+	AssetManager(Manager* man);
 	~AssetManager();
 
 	//게임오브젝트 관리
