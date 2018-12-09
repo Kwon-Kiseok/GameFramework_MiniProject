@@ -89,9 +89,6 @@
     <ClInclude Include="AssetManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ProjectileComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="UILabel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>

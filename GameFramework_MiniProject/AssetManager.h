@@ -22,7 +22,7 @@ public:
 	~AssetManager();
 
 	//게임오브젝트 관리
-	void CreateProjectile(Vector2D pos,Vector2D vel, int range, int speed, std::string id);
+	//void CreateProjectile(Vector2D pos,Vector2D vel, int range, int speed, std::string id);
 
 
 	//텍스쳐 관리

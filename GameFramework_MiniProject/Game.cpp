@@ -10,6 +10,9 @@
 #include "Collision.h"
 #include "AssetManager.h"
 #include <sstream>
+#include <SDL_mixer.h>
+
+Mix_Music* BGM = NULL;
 
 Map *map;
 Manager manager;
@@ -17,7 +20,7 @@ Manager manager;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
-SDL_Rect Game::camera = { 0,0,800,640 };
+SDL_Rect Game::camera = { 0,0,0,520 };
 
 AssetManager* Game::assets = new AssetManager(&manager);
 
@@ -68,7 +71,6 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 	//애셋 메니저를 통한 텍스쳐 ID 등록
 	assets->AddTexture("terrain", "assets/terrain_ss.png");
 	assets->AddTexture("player", "assets/Player_anim.png");
-	assets->AddTexture("projectile", "assets/proj.png");
 
 	//애셋 매니저를 통한 폰트 등록
 	assets->AddFont("arial", "assets/arial.ttf", 16);
@@ -80,7 +82,7 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 	map->LoadMap("assets/map.map", 25, 20);
 
 	//player 에게 할당해주는 컴포넌트들
-	player.addComponent<TransformComponent>(800.0f,600.0f,32,32,2);
+	player.addComponent<TransformComponent>(0.0f,1350.0f,32,32,2);
 	player.addComponent<SpriteComponent>("player",true);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
@@ -89,11 +91,10 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 	SDL_Color white = { 255,255,255,255 };
 	label.addComponent<UILabel>(10, 10, "Test String", "arial", white);
 
-	//총알 생성
-	assets->CreateProjectile(Vector2D(500.0f, 600.0f),Vector2D(2.0f,0.0f) ,200, 2, "projectile");
-	assets->CreateProjectile(Vector2D(600.0f, 620.0f), Vector2D(2.0f, 0.0f), 200, 2, "projectile");
-	assets->CreateProjectile(Vector2D(400.0f, 600.0f), Vector2D(2.0f, 1.0f), 200, 2, "projectile");
-	assets->CreateProjectile(Vector2D(600.0f, 600.0f), Vector2D(2.0f, -1.0f), 200, 2, "projectile");
+	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 640);
+	Mix_VolumeMusic(18);
+	BGM = Mix_LoadMUS("assets/Town_BGM.mp3");
+	Mix_PlayMusic(BGM, -1);
 
 }
 
@@ -101,7 +102,6 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 auto& tiles(manager.getGroup(Game::groupMap));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
-auto& projectiles(manager.getGroup(Game::groupProjectiles));
 
 void Game::handleEvents()
 {
@@ -146,20 +146,10 @@ void Game::update()
 		}
 	}
 
-	for (auto&p : projectiles)
-	{
-		if (Collision::AABB(player.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
-		{
-			std::cout << "플레이어 충돌" << std::endl;
-			//플레이어와 총알의 충돌 시 총알 파괴
-			p->destroy();
-		}
-	}
-
 
 	//카메라 위치 플레이어 따라다니며 고정
-	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - 400);
-	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - 320);
+	camera.x = static_cast<int>(player.getComponent<TransformComponent>().position.x - 200);
+	camera.y = static_cast<int>(player.getComponent<TransformComponent>().position.y - 200);
 	
 
 	//카메라 경계면 바운딩 처리
@@ -167,10 +157,10 @@ void Game::update()
 		camera.x = 0;
 	if (camera.y < 0)
 		camera.y = 0;
-	if (camera.x > camera.w)
-		camera.x = camera.w;
-	if (camera.y > camera.h)
-		camera.y = camera.h;
+	//if (camera.x > camera.w)
+	//	camera.x = camera.w;
+	//if (camera.y > camera.h)
+	//	camera.y = camera.h;
 }
 
 
@@ -192,11 +182,6 @@ void Game::render()
 		p->draw();
 	}
 
-	for (auto& pj : projectiles)
-	{
-		pj->draw();
-	}
-
 	label.draw();
 
 	SDL_RenderPresent(renderer);
@@ -204,8 +189,11 @@ void Game::render()
 
 void Game::clean()
 {
+	Mix_FreeMusic(BGM);
+	Mix_CloseAudio();
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 	std::cout << "Game Cleaned" << std::endl;
 }
+

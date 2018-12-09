@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\include;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_mixer-2.0.4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_image-2.0.1\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\lib\x86;C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_mixer-2.0.4\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2-2.0.8\include;$(IncludePath)</IncludePath>
@@ -85,7 +85,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>C:\Users\KI\source\repos\GameFramework_MiniProject\SDL2_ttf-2.0.14\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -156,7 +156,6 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="KeyboardController.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="ProjectileComponent.h" />
     <ClInclude Include="TileComponent.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
