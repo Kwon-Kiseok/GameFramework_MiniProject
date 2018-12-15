@@ -60,6 +60,12 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 			std::cout << "Renderer created!" << std::endl;
 		}
 
+		//멀티 윈도우 기능을 이용한 맵 보여주는 윈도우
+		mapWindow = SDL_CreateWindow("map", 200, 200, 300, 300, flags);
+		mapRenderer = SDL_CreateRenderer(mapWindow, -1, 0);
+		
+		mapWinTex = IMG_LoadTexture(mapRenderer, "assets/map.png");
+
 		isRunning = true;
 	}
 
@@ -157,16 +163,13 @@ void Game::update()
 		camera.x = 0;
 	if (camera.y < 0)
 		camera.y = 0;
-	//if (camera.x > camera.w)
-	//	camera.x = camera.w;
-	//if (camera.y > camera.h)
-	//	camera.y = camera.h;
 }
 
 
 void Game::render()
 {
 	SDL_RenderClear(renderer);
+	SDL_RenderClear(mapRenderer);
 	for (auto& t : tiles)
 	{
 		t->draw();
@@ -182,8 +185,9 @@ void Game::render()
 		p->draw();
 	}
 
+	SDL_RenderCopy(mapRenderer, mapWinTex, NULL, NULL);
 	label.draw();
-
+	SDL_RenderPresent(mapRenderer);
 	SDL_RenderPresent(renderer);
 }
 
@@ -191,8 +195,11 @@ void Game::clean()
 {
 	Mix_FreeMusic(BGM);
 	Mix_CloseAudio();
+	SDL_DestroyTexture(mapWinTex);
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(mapWindow);
+	SDL_DestroyRenderer(mapRenderer);
 	SDL_Quit();
 	std::cout << "Game Cleaned" << std::endl;
 }

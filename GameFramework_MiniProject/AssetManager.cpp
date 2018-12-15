@@ -22,7 +22,6 @@ SDL_Texture* AssetManager::GetTexture(std::string id)
 	return textures[id];
 }
 
-
 //폰트 경로 id로 등록
 void AssetManager::AddFont(std::string id, std::string path, int fontsize)
 {

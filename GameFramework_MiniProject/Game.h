@@ -43,4 +43,7 @@ public:
 private:
 	int cnt = 0;
 	SDL_Window *window;
+	SDL_Window *mapWindow;
+	SDL_Renderer *mapRenderer;
+	SDL_Texture *mapWinTex;
 };
