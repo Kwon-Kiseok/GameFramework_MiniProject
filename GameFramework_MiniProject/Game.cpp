@@ -45,25 +45,27 @@ void Game::init(const char *title, int width, int height, bool fullscreen)
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
-		std::cout << "Subsystem Initialised!..." << std::endl;
 
 		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 		if (window)
 		{
-			std::cout << "Window created!" << std::endl;
+			std::cout << "길을 잘못들어서 미로에 갇히게 되었다" << std::endl;
+			std::cout << "내게 있는건 흙 묻고 젖은 알아보기 힘든 지도 뿐이다" << std::endl;
+			std::cout << "빨리 출구를 찾아내서 나가도록 하자" << std::endl;
+			std::cout << "---------------조작키---------------" << std::endl;
+			std::cout << "WASD - 캐릭터 이동" << std::endl;
+			std::cout << "ESC - 게임 종료" << std::endl;
 		}
 
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		if (renderer)
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			std::cout << "Renderer created!" << std::endl;
 		}
 
 		//멀티 윈도우 기능을 이용한 맵 보여주는 윈도우
-		mapWindow = SDL_CreateWindow("map", 200, 200, 300, 300, flags);
-		mapRenderer = SDL_CreateRenderer(mapWindow, -1, 0);
-		
+		mapWindow = SDL_CreateWindow("HINT", 200, 200, 300, 300, flags);
+		mapRenderer = SDL_CreateRenderer(mapWindow, -1, 0);		
 		mapWinTex = IMG_LoadTexture(mapRenderer, "assets/map.png");
 
 		isRunning = true;
@@ -111,7 +113,6 @@ auto& colliders(manager.getGroup(Game::groupColliders));
 
 void Game::handleEvents()
 {
-
 	SDL_PollEvent(&event);
 
 	switch (event.type) {
@@ -135,7 +136,7 @@ void Game::update()
 	//그 후 SetLabel에 ss를 통째로 넣어준다.
 	//업데이트로 플레이어의 포지션값을 실시간으로 보여준다.
 	std::stringstream ss;
-	ss << "Player Position: " << playerPos;
+	ss << "Current coordinates: " << playerPos;
 	label.getComponent<UILabel>().SetLabelText(ss.str(), "arial");
 
 	manager.refresh();
@@ -163,6 +164,8 @@ void Game::update()
 		camera.x = 0;
 	if (camera.y < 0)
 		camera.y = 0;
+
+	GameClear();
 }
 
 
@@ -201,6 +204,19 @@ void Game::clean()
 	SDL_DestroyWindow(mapWindow);
 	SDL_DestroyRenderer(mapRenderer);
 	SDL_Quit();
-	std::cout << "Game Cleaned" << std::endl;
 }
 
+void Game::GameClear()
+{
+	if (player.getComponent<TransformComponent>().position.x >= 1919 &&
+		player.getComponent<TransformComponent>().position.x <= 1952 &&
+		player.getComponent<TransformComponent>().position.y >= -54 &&
+		player.getComponent<TransformComponent>().position.y <= 33)
+	{
+		std::cout << "야호! 탈출이다!" << std::endl;
+		std::cout << "무사히 탈출하셨습니다" << std::endl;
+		std::cout << "축하합니다!" << std::endl;
+
+		clean();
+	}
+}

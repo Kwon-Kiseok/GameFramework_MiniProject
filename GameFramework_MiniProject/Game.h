@@ -20,6 +20,7 @@ public:
 	
 	void init(const char* title, int width, int height, bool fullscreen);
 	
+	void GameClear();
 	void handleEvents();
 	void update();
 	void render();
@@ -44,6 +45,9 @@ private:
 	int cnt = 0;
 	SDL_Window *window;
 	SDL_Window *mapWindow;
+	SDL_Window *ClearWindow;
 	SDL_Renderer *mapRenderer;
+	SDL_Renderer *ClearRenderer;
+	SDL_Texture *ClearTex;
 	SDL_Texture *mapWinTex;
 };

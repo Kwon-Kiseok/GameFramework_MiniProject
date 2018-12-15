@@ -21,10 +21,6 @@ public:
 	AssetManager(Manager* man);
 	~AssetManager();
 
-	//게임오브젝트 관리
-	//void CreateProjectile(Vector2D pos,Vector2D vel, int range, int speed, std::string id);
-
-
 	//텍스쳐 관리
 	void AddTexture(std::string id, const char* path);
 	SDL_Texture* GetTexture(std::string id);
